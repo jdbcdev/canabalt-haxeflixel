@@ -83,13 +83,15 @@ class PlayState extends FlxState
 		//Buildings sequence
 		Sequence.initialize();
 
-		seqA = new Sequence();
+		seqA = new Sequence(player);
 		add(seqA);
 		add(seqA.renderLayer);
+		add(seqA.foregroundLayer);
 
-		seqB = new Sequence();
+		seqB = new Sequence(player);
 		add(seqB);
 		add(seqB.renderLayer);
+		add(seqB.foregroundLayer);
 
 		//Starting playing
 		paused = false;
@@ -136,6 +138,8 @@ class PlayState extends FlxState
 	{
 		if (!paused)
 		{
+			var wasDead:Bool = player.dead;
+
 			super.update();
 
 			FlxG.collide(seqA.renderLayer, player, onCollide);
@@ -149,21 +153,60 @@ class PlayState extends FlxState
 				hud.text = Std.string(distance) + "m";
 			}
 
-			if (player.dead)
-				FlxG.switchState(new PlayState());
+			if (player.dead && !wasDead)
+			{
+				//Log.trace("Draw game over");
 
-			//FlxG.collide(player, seqA.renderLayer); //, onCollide);
-			//FlxG.collide(player, seqB.renderLayer); //, onCollide);
+				//FlxG.switchState(new PlayState());
+				var rect:FlxSprite = new FlxSprite(0, 115);
+				rect.makeGraphic( FlxG.width, 64 , 0xff35353d);
+				rect.scrollFactor.x = 0;
+				rect.scrollFactor.y = 0;
+				add(rect);
+
+				var rect2:FlxSprite = new FlxSprite(0, 179);
+				rect2.makeGraphic(FlxG.width, 2 , 0xffffffff);
+				rect2.scrollFactor.x = 0;
+				rect2.scrollFactor.y = 0;
+				add(rect2);
+
+				var rect3:FlxSprite = new FlxSprite(0, FlxG.height-30);
+				rect3.makeGraphic(FlxG.width, 30 , 0xff35353d);
+				rect3.scrollFactor.x = 0;
+				rect3.scrollFactor.y = 0;
+				add(rect3);
+
+				var gameOver:FlxSprite = new FlxSprite((FlxG.width - 390) * 0.5, 88, "assets/images/gameover.png");
+				gameOver.scrollFactor.x = 0;
+				gameOver.scrollFactor.y = 0;
+				add(gameOver);
+
+				var epitaph:String = 'You ran ${hud.text} before ${player.epitaph}';
+				var epitaphText:FlxText = new FlxText(0, 138, FlxG.width, epitaph);
+				epitaphText.color = 0xffffffff;
+				epitaphText.alignment = "center";
+				epitaphText.scrollFactor.x = 0;
+				epitaphText.scrollFactor.y = 0;
+				add(epitaphText);
+
+				var tapText:FlxText = new FlxText(0, FlxG.height-27, FlxG.width-3, "Tap to retry your daring escape.");
+				tapText.alignment = "right";
+				tapText.color = 0xffffffff;
+				tapText.scrollFactor.x = 0;
+				tapText.scrollFactor.y = 0;
+				add(tapText);
+
+				hud.visible = false;
+    		}
+
+    		if (wasDead && FlxG.mouse.justReleased) {
+    			FlxG.switchState(new PlayState());
+    		}
 		}
 	}	
 
 	public function onCollide(object1:FlxObject, object2:FlxObject)
 	{
-		//Log.trace("player.x " + player.x);
-
 		player.onFloor();
-
-		//FlxG.log.add("player.x " + player.x);
-		//FlxG.log.add("player.y " + player.y);
 	}
 }

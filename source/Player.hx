@@ -18,7 +18,7 @@ class Player extends FlxSprite
 	private var sfx_jump:FlxSound;
   private var sfx_tumble:FlxSound;
 
-  private var epitaph:String;
+  public var epitaph:String;
 
   private var fc:Float;
   private var ft:Float;
@@ -50,6 +50,8 @@ class Player extends FlxSprite
     jump = 0;
     stumble = false;
     fc = 0;
+
+    epitaph = "fall";
 
     //Feet sounds
     sfx_feet = new Array<FlxSound>();
@@ -162,14 +164,6 @@ class Player extends FlxSprite
       }
     }
 
-    /*
-    if (velocity.y < -140)
-    [self play:@"jump"];
-  else if (velocity.y > -140) {
-    [self play:@"fall"];
-    stumble = NO;
-    */
-
   	super.update();
 
   	/*if (velocity.y == maxVelocity.y)
@@ -192,7 +186,9 @@ class Player extends FlxSprite
   {
     sfx_tumble.play();
 
-    
+    stumble = true;
+    velocity.x = velocity.x * 0.7;
+
   }
 
   /*

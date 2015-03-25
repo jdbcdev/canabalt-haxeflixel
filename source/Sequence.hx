@@ -32,6 +32,7 @@ class Sequence extends FlxObject
 	private var building:Building;
 	private var escape:FlxTileblock;
 	private var fence:FlxTileblock;
+	private var obstacle:Obstacle;
 
 	private static var curIndex:Int;
 	private var nextIndex:Int;
@@ -64,9 +65,10 @@ class Sequence extends FlxObject
 		super(x,y);
 	}*/
 
-	public function new()
+	public function new(player:Player)
 	{
 		super(nextX, 0);
+		this.player = player;
 
 		renderLayer = new FlxGroup();
 		foregroundLayer = new FlxGroup();
@@ -110,9 +112,11 @@ class Sequence extends FlxObject
 
 	public function resetBuilding()
 	{
-		FlxG.log.add("Reset building");
+		//FlxG.log.add("Reset building");
 
 		renderLayer.remove(building);
+		if (obstacle!=null)
+			foregroundLayer.remove(obstacle);
 		building.kill();
 	}
 
@@ -123,21 +127,16 @@ class Sequence extends FlxObject
 		building = new Building();
 		building.x = nextX;
 		
-		var startY:Int;
 		if (curIndex == 0) //First sequence
 		{
-			startY = 130;
-			this.y = startY;
+			this.y = 130;
 		}
 		else
 		{
-			startY = FlxRandom.intRanged(100, 200);
-			this.y = startY;
+			this.y = FlxRandom.intRanged(100, 200);
 		}
 
-		building.createRect(startY);
-
-		//building.create();
+		building.createRect(Std.int(this.y));
 		renderLayer.add(building);
 
 		this.width = building.width;
@@ -147,14 +146,13 @@ class Sequence extends FlxObject
 		FlxG.worldBounds.setSize(nextX + width, FlxG.height);
 		
 		//Log.trace("Creating building: width " + this.width);
-		FlxG.log.add("Creating building: nextX " + nextX);
+		//FlxG.log.add("Creating building: nextX " + nextX);
 
 		//Obstacles
-		//if (Std.random(1) < 0.15)
-		if (curIndex > 0)
+		if (curIndex > 0 && FlxRandom.float() < 0.15)
 		{
-			var obstacle:Obstacle = new Obstacle(this.x + this.width / 8 + Std.random(1) * (this.width * 0.5), this.y, player);
-			renderLayer.add(obstacle);
+			obstacle = new Obstacle(this.x + this.width / 8 + Std.random(1) * (this.width * 0.5), this.y, player);
+			foregroundLayer.add(obstacle);
 		}
 
 		curIndex++;
@@ -172,7 +170,7 @@ class Sequence extends FlxObject
 
 		if (point.x + this.width < 0)
 		{
-			FlxG.log.add("checkValue " + checkValue);
+			//FlxG.log.add("checkValue " + checkValue);
 
 			//Reset
 			//self.x = seq.x + seq.width + gap*tileSize;
