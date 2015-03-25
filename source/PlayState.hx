@@ -80,8 +80,6 @@ class PlayState extends FlxState
 		player = new Player(0, 100);
 		add(player);
 
-		player.animation.play("run2");
-
 		//Buildings sequence
 		Sequence.initialize();
 
@@ -96,7 +94,6 @@ class PlayState extends FlxState
 		//Starting playing
 		paused = false;
 		
-		//FlxG.camera.follow(player);
 		ghost = new FlxSprite(player.x + 200, player.y);
 		FlxG.camera.follow(ghost);
 
@@ -105,8 +102,7 @@ class PlayState extends FlxState
 		sfx_crumble.play();
 
 		//Distance
-		hud = new HUD(FlxG.width-20, 5);
-		hud.text = "0";
+		hud = new HUD(FlxG.width-150, 5);
 		add(hud);
 
 		super.create();
@@ -121,6 +117,7 @@ class PlayState extends FlxState
 		super.destroy();
 
 		player.destroy();
+		ghost.destroy();
 		seqA.destroy();
 		seqB.destroy();
 
@@ -139,11 +136,21 @@ class PlayState extends FlxState
 	{
 		if (!paused)
 		{
+			super.update();
+
 			FlxG.collide(seqA.renderLayer, player, onCollide);
 			FlxG.collide(seqB.renderLayer, player, onCollide);
 
-			ghost.x = player.x + 200;
-			super.update();
+			if (player.velocity.x > 0)
+			{
+				ghost.x = player.x + 200;
+
+				var distance:Int = Std.int(player.x/10);
+				hud.text = Std.string(distance) + "m";
+			}
+
+			if (player.dead)
+				FlxG.switchState(new PlayState());
 
 			//FlxG.collide(player, seqA.renderLayer); //, onCollide);
 			//FlxG.collide(player, seqB.renderLayer); //, onCollide);

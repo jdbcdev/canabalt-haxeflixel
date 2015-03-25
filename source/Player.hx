@@ -3,16 +3,25 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxSound;
+import flixel.util.FlxRandom;
 import haxe.Log;
 
 class Player extends FlxSprite
 {
-  private var dead:Bool;
+  public var dead:Bool;
+
+  private var stumble:Bool;
 	private var jump:Float;
 	private var jumpLimit:Float;
 
 	private var sfx_feet:Array<FlxSound>;
 	private var sfx_jump:FlxSound;
+  private var sfx_tumble:FlxSound;
+
+  private var epitaph:String;
+
+  private var fc:Float;
+  private var ft:Float;
 
 	public function new(x:Int, y:Int):Void
 	{	
@@ -33,23 +42,31 @@ class Player extends FlxSprite
 
 		//drag.x = 640;
 
-    //acceleration.x = 0;
 		acceleration.x = 1;
     acceleration.y = 1200;
     maxVelocity.x = 1000;
     maxVelocity.y = 360;
     velocity.x = 125;
-    //velocity.x = 200;
     jump = 0;
+    stumble = false;
+    fc = 0;
 
     //Feet sounds
     sfx_feet = new Array<FlxSound>();
-    for (i in 1...4)
+    for (i in 1...2)
     {
-    	sfx_feet.push(FlxG.sound.load("assets/sounds/foot1.wav"));
+    	sfx_feet.push(FlxG.sound.load("assets/sounds/foot" + i + ".wav"));
     }
     
+    /*
+    sfx_jump = new Array<FlxSound>();
+    for (i in 1...2)
+    {
+      sfx_jump.push(FlxG.sound.load("assets/sounds/jump" + i + ".wav"));
+    }*/
+
     sfx_jump = FlxG.sound.load("assets/sounds/jump1.wav");
+    sfx_tumble = FlxG.sound.load("assets/sounds/tumble.wav");
 	}
 
 	/**
@@ -65,9 +82,12 @@ class Player extends FlxSprite
     if (acceleration.x <= 0)
       return super.update();
 
-  	sfx_feet[1].play();
+    //var indexFeet:Int = FlxRandom.intRanged(0,1);
+    //Log.trace("indexFeet " + indexFeet);
+    //indexFeet = 0;
+  	//sfx_feet[indexFeet].play();
 
-     if (velocity.x < 0) velocity.x = 0;
+    if (velocity.x < 0) velocity.x = 0;
     else if (velocity.x < 100) acceleration.x = 60;
     else if (velocity.x < 250) acceleration.x = 36;
     else if (velocity.x < 400) acceleration.x = 24;
@@ -85,7 +105,8 @@ class Player extends FlxSprite
       // iOS / Android || FlxG.touches.getFirst().pressed)) { //&& FlxG.touches.touching) {
 			 
       if (jump == 0) {
-		    sfx_jump.play();
+		    //sfx_jump[1].play();
+        sfx_jump.play();
 			}
 
       jump += FlxG.elapsed;
@@ -108,6 +129,47 @@ class Player extends FlxSprite
      			velocity.y = -maxVelocity.y;
   	}
 
+    if (velocity.y < -140)
+      animation.play("jump");
+    else if (velocity.y > 0) {
+      animation.play("fall");
+      stumble = false;
+    }
+    else
+    {
+      //Running
+      ft = (1 - velocity.x / maxVelocity.x) * 0.35;
+      if (ft < 0.15) ft = 0.15;
+      fc += FlxG.elapsed;
+      if (fc > ft) {
+        fc = 0;
+        //sfx_feet[FlxRandom.intRanged(0,1)].play();
+        sfx_feet[0].play();
+      }
+
+      //Log.trace("stumble " + stumble);
+
+      if (!stumble) {
+        // Normal running
+        if (velocity.x < 150)
+          animation.play("run1");
+        else if (velocity.x < 300)
+                animation.play("run2");
+        else if (velocity.x < 550) 
+                animation.play("run3");
+        else 
+          animation.play("run4");
+      }
+    }
+
+    /*
+    if (velocity.y < -140)
+    [self play:@"jump"];
+  else if (velocity.y > -140) {
+    [self play:@"fall"];
+    stumble = NO;
+    */
+
   	super.update();
 
   	/*if (velocity.y == maxVelocity.y)
@@ -117,9 +179,23 @@ class Player extends FlxSprite
 
   public function onFloor()
   {
-    jump = 0;
+
+    //Log.trace("velocity.x " + velocity.x);
+
+    if (velocity.x > 0)
+    {
+      jump = 0;
+    }
   }
 
+  public function setStumble()
+  {
+    sfx_tumble.play();
+
+    
+  }
+
+  /*
   private function movement()
   {
     var pressed:Bool = FlxG.mouse.justPressed;
@@ -127,5 +203,5 @@ class Player extends FlxSprite
     {
       FlxG.log.add(" " + this.y);
     }
-  }
+  }*/
 }

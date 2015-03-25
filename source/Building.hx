@@ -200,11 +200,10 @@ class Building extends FlxSpriteGroup
 
 	}
 
-	public function createRect()
+	public function createRect(startY:Int)
 	{	
 		var numTiles:Int = FlxRandom.intRanged(30, 50);
-		var startY:Int = FlxRandom.intRanged(100, 200);
-
+		
 		var rect:FlxSprite = new FlxSprite(0, startY);
 		rect.makeGraphic(numTiles * TILE_SIZE ,20 * TILE_SIZE, 0xffffffff);
 		add(rect);
