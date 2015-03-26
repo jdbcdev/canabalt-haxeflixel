@@ -155,9 +155,6 @@ class PlayState extends FlxState
 
 			if (player.dead && !wasDead)
 			{
-				//Log.trace("Draw game over");
-
-				//FlxG.switchState(new PlayState());
 				var rect:FlxSprite = new FlxSprite(0, 115);
 				rect.makeGraphic( FlxG.width, 64 , 0xff35353d);
 				rect.scrollFactor.x = 0;

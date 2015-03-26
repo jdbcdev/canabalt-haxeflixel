@@ -84,11 +84,6 @@ class Player extends FlxSprite
     if (acceleration.x <= 0)
       return super.update();
 
-    //var indexFeet:Int = FlxRandom.intRanged(0,1);
-    //Log.trace("indexFeet " + indexFeet);
-    //indexFeet = 0;
-  	//sfx_feet[indexFeet].play();
-
     if (velocity.x < 0) velocity.x = 0;
     else if (velocity.x < 100) acceleration.x = 60;
     else if (velocity.x < 250) acceleration.x = 36;
@@ -107,7 +102,6 @@ class Player extends FlxSprite
       // iOS / Android || FlxG.touches.getFirst().pressed)) { //&& FlxG.touches.touching) {
 			 
       if (jump == 0) {
-		    //sfx_jump[1].play();
         sfx_jump.play();
 			}
 
@@ -117,7 +111,6 @@ class Player extends FlxSprite
       //Log.trace("jumpLimit " + jumpLimit);
 
     	if (jump > jumpLimit) {
-        //Log.trace("llego al limite");
       	jump = -1;
       }
   	}

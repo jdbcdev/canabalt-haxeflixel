@@ -163,39 +163,46 @@ class Building extends FlxSpriteGroup
   		rightEdge.height = this.height - TILE_SIZE;*/
 	}
 
-	public function create()
+	public function create(startY:Int)
 	{
-		var maxTiles:Int = FlxRandom.intRanged(30, 40);
+		var numTiles:Int = FlxRandom.intRanged(30, 50);
 
-		var roofLeft:FlxTileblock = new FlxTileblock(0, 130, TILE_SIZE, TILE_SIZE);
+		var roofLeft:FlxTileblock = new FlxTileblock(0, startY, TILE_SIZE, TILE_SIZE);
 		roofLeft.loadGraphic( ASSETS_IMAGES + "roof1-left.png", TILE_SIZE, TILE_SIZE);
+		roofLeft.immovable = true;
 		add(roofLeft);
 
-		var roofMiddle:FlxTileblock = new FlxTileblock(TILE_SIZE, 130, maxTiles * TILE_SIZE, TILE_SIZE);
-		roofMiddle.loadTiles( ASSETS_IMAGES + "roof1-middle.png", TILE_SIZE, TILE_SIZE);
+		var roofMiddle:FlxTileblock = new FlxTileblock(TILE_SIZE, startY, numTiles * TILE_SIZE, TILE_SIZE);
+		roofMiddle.loadTiles( ASSETS_IMAGES + "roof1-middle-cracked.png", TILE_SIZE, TILE_SIZE);
+		roofMiddle.immovable = true;
 		add(roofMiddle);
 
-		var roofRight:FlxTileblock = new FlxTileblock(TILE_SIZE * (maxTiles + 1), 130, TILE_SIZE, TILE_SIZE);
+		var roofRight:FlxTileblock = new FlxTileblock(TILE_SIZE * (numTiles + 1), startY, TILE_SIZE, TILE_SIZE);
 		roofRight.loadGraphic( ASSETS_IMAGES + "roof1-right.png", TILE_SIZE, TILE_SIZE);
+		roofRight.immovable = true;
 		add(roofRight);
 
-		var wallLeft:FlxTileblock = new FlxTileblock(0, 130 + TILE_SIZE, TILE_SIZE, TILE_SIZE * maxTiles);
+		var wallLeft:FlxTileblock = new FlxTileblock(0, startY + TILE_SIZE, TILE_SIZE, TILE_SIZE * 20);
 		wallLeft.loadTiles( ASSETS_IMAGES + "wall1-left.png", TILE_SIZE, TILE_SIZE);
+		wallLeft.immovable = true;
 		add(wallLeft);
 
-		var wallMiddle:FlxTileblock = new FlxTileblock(TILE_SIZE, 130 + TILE_SIZE, maxTiles * TILE_SIZE, TILE_SIZE * 20);
-		wallMiddle.loadTiles( ASSETS_IMAGES + "wall1-middle.png", TILE_SIZE, TILE_SIZE);
+		var wallMiddle:FlxTileblock = new FlxTileblock(TILE_SIZE, startY + TILE_SIZE, numTiles * TILE_SIZE, TILE_SIZE * 20);
+		wallMiddle.loadTiles( ASSETS_IMAGES + "wall1-middle-cracked.png", TILE_SIZE, TILE_SIZE);
+		wallMiddle.immovable = true;
 		add(wallMiddle);
 
 		for (i in 0...10)
 		{
-			var window:FlxTileblock = new FlxTileblock(TILE_SIZE, 130 + TILE_SIZE * 2 + 2 * i * TILE_SIZE, maxTiles * TILE_SIZE, TILE_SIZE);
+			var window:FlxTileblock = new FlxTileblock(TILE_SIZE, startY + TILE_SIZE * 2 + 2 * i * TILE_SIZE, numTiles * TILE_SIZE, TILE_SIZE);
 			window.loadTiles(ASSETS_IMAGES + "window2.png", TILE_SIZE, TILE_SIZE);
+			window.immovable = true;
 			add(window);
 		}
 
-		var wallRight:FlxTileblock = new FlxTileblock(TILE_SIZE * (maxTiles + 1), 130 + TILE_SIZE, TILE_SIZE, TILE_SIZE * maxTiles);
+		var wallRight:FlxTileblock = new FlxTileblock(TILE_SIZE * (numTiles + 1), startY + TILE_SIZE, TILE_SIZE, TILE_SIZE * 20);
 		wallRight.loadTiles( ASSETS_IMAGES + "wall1-right.png", TILE_SIZE, TILE_SIZE);
+		wallRight.immovable = true;
 		add(wallRight);
 
 	}

@@ -137,6 +137,7 @@ class Sequence extends FlxObject
 		}
 
 		building.createRect(Std.int(this.y));
+		//building.create(Std.int(this.y));
 		renderLayer.add(building);
 
 		this.width = building.width;
