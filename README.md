@@ -1,4 +1,3 @@
-# canabalt-haxeflixel
 
 =========================================
 Canabalt HaxeFlixel - March 27, 2015
