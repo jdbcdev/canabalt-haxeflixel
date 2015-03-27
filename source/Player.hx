@@ -10,7 +10,7 @@ class Player extends FlxSprite
 {
   public var dead:Bool;
 
-  private var stumble:Bool;
+  public var stumble:Bool;
 	private var jump:Float;
 	private var jumpLimit:Float;
 
@@ -22,6 +22,7 @@ class Player extends FlxSprite
 
   private var fc:Float;
   private var ft:Float;
+  private var my:Float;
 
 	public function new(x:Int, y:Int):Void
 	{	
@@ -40,8 +41,6 @@ class Player extends FlxSprite
 		animation.add("stumble3", [27,28,29,30,31,32,33,34,35,36,37], 28);
 		animation.add("stumble4", [27,28,29,30,31,32,33,34,35,36,37], 35);
 
-		//drag.x = 640;
-
 		acceleration.x = 1;
     acceleration.y = 1200;
     maxVelocity.x = 1000;
@@ -50,6 +49,7 @@ class Player extends FlxSprite
     jump = 0;
     stumble = false;
     fc = 0;
+    my = 0;
 
     epitaph = "fall";
 
@@ -83,7 +83,7 @@ class Player extends FlxSprite
 
     if (acceleration.x <= 0)
       return super.update();
-
+    
     if (velocity.x < 0) velocity.x = 0;
     else if (velocity.x < 100) acceleration.x = 60;
     else if (velocity.x < 250) acceleration.x = 36;
@@ -106,9 +106,6 @@ class Player extends FlxSprite
 			}
 
       jump += FlxG.elapsed;
-
-      //Log.trace("jump " + jump);
-      //Log.trace("jumpLimit " + jumpLimit);
 
     	if (jump > jumpLimit) {
       	jump = -1;
@@ -138,11 +135,8 @@ class Player extends FlxSprite
       fc += FlxG.elapsed;
       if (fc > ft) {
         fc = 0;
-        //sfx_feet[FlxRandom.intRanged(0,1)].play();
         sfx_feet[0].play();
       }
-
-      //Log.trace("stumble " + stumble);
 
       if (!stumble) {
         // Normal running
@@ -159,15 +153,18 @@ class Player extends FlxSprite
 
   	super.update();
 
-  	/*if (velocity.y == maxVelocity.y)
-    	my += FlxG.elapsed;*/
+    if (velocity.y == maxVelocity.y)
+      my += FlxG.elapsed;
 
   }
 
   public function onFloor()
   {
-
-    //Log.trace("velocity.x " + velocity.x);
+    /*
+    if (my > 0.16)
+      stumble = true;
+    my = 0;
+    */
 
     if (velocity.x > 0)
     {
@@ -179,9 +176,19 @@ class Player extends FlxSprite
   {
     sfx_tumble.play();
 
-    stumble = true;
+    //stumble = true;
     velocity.x = velocity.x * 0.7;
 
+    /*
+    if (velocity.x > 500) 
+      animation.play("stumble4");
+    else if (velocity.x > 300) 
+      animation.play("stumble3");
+    else if (velocity.x > 150) 
+      animation.play("stumble2");
+    else 
+      animation.play("stumble1");
+    */
   }
 
   /*

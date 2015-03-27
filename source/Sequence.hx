@@ -2,7 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.group.FlxGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxPoint;
 import flixel.tile.FlxTileblock;
 import flixel.effects.particles.FlxEmitter;
@@ -13,12 +13,13 @@ enum Types { ROOF; COLLAPSE; BILLBOARD; }
 
 class Sequence extends FlxObject
 {	
-	public var renderLayer:FlxGroup;
-	public var foregroundLayer:FlxGroup;
+	public var collisionLayer:FlxSpriteGroup;
+	public var renderLayer:FlxSpriteGroup;
+	public var foregroundLayer:FlxSpriteGroup;
 
-	private var layer:FlxGroup;
-	private var backgroundRenderLayer:FlxGroup;
-	private var layerLeg:FlxGroup;
+	//private var layer:FlxSpriteGroup;
+	public var decorateLayer:FlxSpriteGroup;
+	private var layerLeg:FlxSpriteGroup;
 	
 	private var seq:Sequence;
 
@@ -29,7 +30,9 @@ class Sequence extends FlxObject
 	private var shardsA:FlxEmitter;
 	private var shardsB:FlxEmitter;
 
-	private var building:Building;
+	private var building:FlxSpriteGroup;
+	private var rect:FlxSpriteGroup;
+	private var decorate:FlxSpriteGroup;
 	private var escape:FlxTileblock;
 	private var fence:FlxTileblock;
 	private var obstacle:Obstacle;
@@ -70,8 +73,10 @@ class Sequence extends FlxObject
 		super(nextX, 0);
 		this.player = player;
 
-		renderLayer = new FlxGroup();
-		foregroundLayer = new FlxGroup();
+		collisionLayer = new FlxSpriteGroup();
+		renderLayer = new FlxSpriteGroup();
+		decorateLayer = new FlxSpriteGroup();
+		foregroundLayer = new FlxSpriteGroup();
 		createBuilding();
 
 		immovable = true;
@@ -81,6 +86,7 @@ class Sequence extends FlxObject
 		blocks.add(mainBlock);*/
 	}
 
+	/*
 	public function initWithPlayer(player:Player)
 	{
 		this.player = player;
@@ -88,44 +94,27 @@ class Sequence extends FlxObject
 		//var hallHeight:Int = 0;
 		//hallHeight = 4;
 
-		/*
-		blocks = new FlxGroup();
-		blocks.add(block);
-
-		Hall.initialize();
-
-		hall = new Hall();
-		hall.initWithMaxWidth(1344);
-
-		var hallHeight:Int = 3;
-		hallHeight *= tileSize;
-
-		var width:Int = 20 * tileSize;
-		var height:Int = tileSize; 
-		hall.createWithX(this.x, this.y, width, height, tileSize, hallHeight, 1, 1);
-
-		renderLayer.add(hall);*/
-
-		createBuilding();
-		
+		createBuilding();		
 	}
+	*/
 
 	public function resetBuilding()
 	{
 		//FlxG.log.add("Reset building");
 
 		renderLayer.remove(building);
+		collisionLayer.remove(rect);
+		decorateLayer.remove(decorate);
 		if (obstacle!=null)
 			foregroundLayer.remove(obstacle);
 		building.kill();
+		rect.kill();
+		decorate.kill();
 	}
 
 	public function createBuilding()
 	{		
 		this.x = nextX;
-
-		building = new Building();
-		building.x = nextX;
 		
 		if (curIndex == 0) //First sequence
 		{
@@ -136,19 +125,25 @@ class Sequence extends FlxObject
 			this.y = FlxRandom.intRanged(100, 200);
 		}
 
-		building.createRect(Std.int(this.y));
-		//building.create(Std.int(this.y));
+		var numTiles:Int = FlxRandom.intRanged(50, 70);
+		rect = Building.createRect(numTiles, Std.int(this.y));
+		rect.x = nextX;
+		rect.visible = false;
+		collisionLayer.add(rect);
+
+		building = Building.create(numTiles, Std.int(this.y));
+		building.x = nextX;
 		renderLayer.add(building);
 
-		this.width = building.width;
+		this.width = rect.width;
+
+		decorate = Building.createDecorate(x, y, Std.int(width));
+		decorateLayer.add(decorate);
 
 		nextX = nextX + this.width  + FlxRandom.intRanged(5, 7) * TILE_SIZE; //Static variable to setX the next sequence
 
 		FlxG.worldBounds.setSize(nextX + width, FlxG.height);
 		
-		//Log.trace("Creating building: width " + this.width);
-		//FlxG.log.add("Creating building: nextX " + nextX);
-
 		//Obstacles
 		if (curIndex > 0 && FlxRandom.float() < 0.15)
 		{
@@ -181,9 +176,6 @@ class Sequence extends FlxObject
 
 			resetBuilding();
 			createBuilding();
-
-			//this.velocity.x = 2;
-			//player.acceleration.x = 0;
 
 			//Log.trace("Reset " + building.x);
 

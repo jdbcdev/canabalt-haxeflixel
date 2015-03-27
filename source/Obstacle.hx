@@ -26,7 +26,6 @@ class Obstacle extends FlxSprite
 	{
 		if (!dead && this.overlaps(this.player))
 		{
-			//Log.trace("Obstacle update");
 			player.setStumble();
 
 			velocity.x = player.velocity.x + Std.random(100) - 50;

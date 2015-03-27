@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.tile.FlxTileblock;
@@ -7,7 +8,7 @@ import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import haxe.Log;
 
-class Building extends FlxSpriteGroup
+class Building extends FlxObject
 {
 	//private var leftEdge:FlxTileblock;
 	//private var rightEdge:FlxTileblock;
@@ -38,17 +39,8 @@ class Building extends FlxSpriteGroup
 	private static var windowImages:Array<String>;
 
 	private static var TILE_SIZE:Int = 16;
+	private static var DEC_SIZE:Int = 20;
 	private static var ASSETS_IMAGES = "assets/images/";
-
-	/*enum Building_Type {
-  		ROOF;
-  		HALLWAY;
-  		COLLAPSE;
-  		BOMB;
-  		CRANE;
-  		BILLBOARD;
-  		LEG;
-	}*/
 
 	public static function initialize(){
 
@@ -124,97 +116,86 @@ class Building extends FlxSpriteGroup
 						"window4.png"];
 	}
 
-	public function initWithMaxWidth(maxWidth:Int)
+	public static function create(numTiles:Int, startY:Int):FlxSpriteGroup
 	{
-		//leftEdge = new FlxTileblock(0, 0, TILE_SIZE, 400-TILE_SIZE);
-		//leftEdge.loadTiles(ASSETS_IMAGES + leftWalls[1]);
-		//add(leftEdge);
+		var type = FlxRandom.intRanged(1, 4);
+		var renderLayer:FlxSpriteGroup = new FlxSpriteGroup();
 
-		//rightEdge = new FlxTileblock(0, 0, TILE_SIZE, 400-TILE_SIZE);
-		//rightEdge.loadTiles(ASSETS_IMAGES + rightWalls[1]);
-		//add(rightEdge);
-    	
-    	//topEdge = new FlxTileblock(0, 0, maxWidth - TILE_SIZE * 2, TILE_SIZE);
-    	//topEdge.loadTiles(ASSETS_IMAGES + middleRoofs[1]);
-    	//add(topEdge);
-	}
+		var numRows:Int = TILE_SIZE * 20;
 
-	public function createWithX(x:Float, y:Float, width:Float, height:Float, wallType:Int, windowType:Int)
-	{
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = 400;
-
-		Log.trace("width " + width);
-		Log.trace("height " + height);
-
-		velocity.y = 0;
-  		acceleration.y = 0;
-
-  		/*leftEdge.x = this.x;
-  		leftEdge.y = this.y + TILE_SIZE;
-  		leftEdge.width = TILE_SIZE;
-  		leftEdge.height = this.height - TILE_SIZE;
-
-  		rightEdge.x = this.x + this.width - TILE_SIZE;
-  		rightEdge.y = this.y + TILE_SIZE;
-  		rightEdge.width = TILE_SIZE;
-  		rightEdge.height = this.height - TILE_SIZE;*/
-	}
-
-	public function create(startY:Int)
-	{
-		var numTiles:Int = FlxRandom.intRanged(30, 50);
-
-		var roofLeft:FlxTileblock = new FlxTileblock(0, startY, TILE_SIZE, TILE_SIZE);
-		roofLeft.loadGraphic( ASSETS_IMAGES + "roof1-left.png", TILE_SIZE, TILE_SIZE);
+		var roofLeft:FlxSprite = new FlxSprite(0, startY);
+		roofLeft.loadGraphic( ASSETS_IMAGES + "roof" + type + "-left.png", false, TILE_SIZE, TILE_SIZE);
 		roofLeft.immovable = true;
-		add(roofLeft);
+		renderLayer.add(roofLeft);
 
-		var roofMiddle:FlxTileblock = new FlxTileblock(TILE_SIZE, startY, numTiles * TILE_SIZE, TILE_SIZE);
-		roofMiddle.loadTiles( ASSETS_IMAGES + "roof1-middle-cracked.png", TILE_SIZE, TILE_SIZE);
-		roofMiddle.immovable = true;
-		add(roofMiddle);
-
-		var roofRight:FlxTileblock = new FlxTileblock(TILE_SIZE * (numTiles + 1), startY, TILE_SIZE, TILE_SIZE);
-		roofRight.loadGraphic( ASSETS_IMAGES + "roof1-right.png", TILE_SIZE, TILE_SIZE);
+		var roofRight:FlxSprite = new FlxSprite(TILE_SIZE * numTiles, startY);
+		roofRight.loadGraphic( ASSETS_IMAGES + "roof" + type + "-right.png", false, TILE_SIZE, TILE_SIZE);
 		roofRight.immovable = true;
-		add(roofRight);
+		renderLayer.add(roofRight);
 
-		var wallLeft:FlxTileblock = new FlxTileblock(0, startY + TILE_SIZE, TILE_SIZE, TILE_SIZE * 20);
-		wallLeft.loadTiles( ASSETS_IMAGES + "wall1-left.png", TILE_SIZE, TILE_SIZE);
+		for (j in 1...numTiles)
+		{
+			var roofMiddle:FlxSprite = new FlxSprite(j * TILE_SIZE, startY);
+			roofMiddle.loadGraphic(ASSETS_IMAGES + "roof" + type + "-middle.png", false, TILE_SIZE, TILE_SIZE);
+			roofMiddle.immovable = true;
+			renderLayer.add(roofMiddle);
+		}
+
+		var wallLeft:FlxTileblock = new FlxTileblock(0, startY + TILE_SIZE, TILE_SIZE, numRows);
+		wallLeft.loadTiles( ASSETS_IMAGES + "wall" + type + "-left.png", TILE_SIZE, TILE_SIZE);
 		wallLeft.immovable = true;
-		add(wallLeft);
+		renderLayer.add(wallLeft);
 
-		var wallMiddle:FlxTileblock = new FlxTileblock(TILE_SIZE, startY + TILE_SIZE, numTiles * TILE_SIZE, TILE_SIZE * 20);
-		wallMiddle.loadTiles( ASSETS_IMAGES + "wall1-middle-cracked.png", TILE_SIZE, TILE_SIZE);
+		var wallMiddle:FlxTileblock = new FlxTileblock(TILE_SIZE, startY + TILE_SIZE, (numTiles-1) * TILE_SIZE, numRows);
+		wallMiddle.loadTiles( ASSETS_IMAGES + "wall" + type + "-middle.png", TILE_SIZE, TILE_SIZE);
 		wallMiddle.immovable = true;
-		add(wallMiddle);
+		renderLayer.add(wallMiddle);
+
+		var wallRight:FlxTileblock = new FlxTileblock(TILE_SIZE * numTiles, startY + TILE_SIZE, TILE_SIZE, numRows);
+		wallRight.loadTiles( ASSETS_IMAGES + "wall" + type + "-right.png", TILE_SIZE, TILE_SIZE);
+		wallRight.immovable = true;
+		renderLayer.add(wallRight);
 
 		for (i in 0...10)
 		{
-			var window:FlxTileblock = new FlxTileblock(TILE_SIZE, startY + TILE_SIZE * 2 + 2 * i * TILE_SIZE, numTiles * TILE_SIZE, TILE_SIZE);
+			var window:FlxTileblock = new FlxTileblock(TILE_SIZE, startY + TILE_SIZE * 2 + 2 * i * TILE_SIZE, (numTiles -1) * TILE_SIZE, TILE_SIZE);
 			window.loadTiles(ASSETS_IMAGES + "window2.png", TILE_SIZE, TILE_SIZE);
 			window.immovable = true;
-			add(window);
+			renderLayer.add(window);
 		}
 
-		var wallRight:FlxTileblock = new FlxTileblock(TILE_SIZE * (numTiles + 1), startY + TILE_SIZE, TILE_SIZE, TILE_SIZE * 20);
-		wallRight.loadTiles( ASSETS_IMAGES + "wall1-right.png", TILE_SIZE, TILE_SIZE);
-		wallRight.immovable = true;
-		add(wallRight);
-
+		return renderLayer;
 	}
 
-	public function createRect(startY:Int)
+	public static function createRect(numTiles:Int, startY:Int):FlxSpriteGroup
 	{	
-		var numTiles:Int = FlxRandom.intRanged(30, 50);
+		var collisionLayer:FlxSpriteGroup = new FlxSpriteGroup();
 		
 		var rect:FlxSprite = new FlxSprite(0, startY);
 		rect.makeGraphic(numTiles * TILE_SIZE ,20 * TILE_SIZE, 0xffffffff);
-		add(rect);
+		collisionLayer.add(rect);
 
 		rect.immovable = true;
+
+		return collisionLayer;
+	}
+
+	public static function createDecorate(x:Float, y:Float, width:Int):FlxSpriteGroup
+	{
+		var decorateLayer:FlxSpriteGroup = new FlxSpriteGroup();
+
+		var s:Int = 40;
+  		var n:Int = Std.int(width/s);
+
+  		for (i in 1...n)
+  		{
+    		if (FlxRandom.float() < 0.3)
+    		{
+    			var sprite:FlxSprite = new FlxSprite(x + DEC_SIZE + s * i, y - DEC_SIZE, ASSETS_IMAGES + "ac-trimmed.png");
+    			decorateLayer.add(sprite);
+    		}
+      	}	
+
+		return decorateLayer;
 	}
 }

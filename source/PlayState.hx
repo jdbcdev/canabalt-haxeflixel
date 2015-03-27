@@ -8,6 +8,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.system.FlxSound;
+import flixel.FlxCamera;
 
 import haxe.Log;
 
@@ -32,6 +33,7 @@ class PlayState extends FlxState
 	private var paused:Bool;
 
 	private var sfx_crumble:FlxSound;
+	//private var sfx_wall:FlxSound;
 	private var hud:HUD;
 
 	/**
@@ -77,30 +79,35 @@ class PlayState extends FlxState
 		bottonground.scrollFactor.y = 0.5;
 		add(bottonground);
 
-		player = new Player(0, 100);
-		add(player);
-
 		//Buildings sequence
 		Sequence.initialize();
 
 		seqA = new Sequence(player);
 		add(seqA);
+		add(seqA.collisionLayer);
 		add(seqA.renderLayer);
 		add(seqA.foregroundLayer);
+		add(seqA.decorateLayer);
 
 		seqB = new Sequence(player);
 		add(seqB);
 		add(seqB.renderLayer);
+		add(seqB.collisionLayer);
 		add(seqB.foregroundLayer);
+		add(seqB.decorateLayer);
 
+		player = new Player(0, 100);
+		add(player);
+		
 		//Starting playing
 		paused = false;
 		
 		ghost = new FlxSprite(player.x + 200, player.y);
-		FlxG.camera.follow(ghost);
+		FlxG.camera.follow(ghost, FlxCamera.STYLE_PLATFORMER);
 
 		//Sounds
 		sfx_crumble = FlxG.sound.load("assets/sounds/crumble.wav");
+		//sfx_wall = FlxG.sound.load("assets/sounds/wall.wav");
 		sfx_crumble.play();
 
 		//Distance
@@ -142,12 +149,13 @@ class PlayState extends FlxState
 
 			super.update();
 
-			FlxG.collide(seqA.renderLayer, player, onCollide);
-			FlxG.collide(seqB.renderLayer, player, onCollide);
+			FlxG.collide(seqA.collisionLayer, player, onCollide);
+			FlxG.collide(seqB.collisionLayer, player, onCollide);
 
 			if (player.velocity.x > 0)
 			{
 				ghost.x = player.x + 200;
+				ghost.y = player.y;
 
 				var distance:Int = Std.int(player.x/10);
 				hud.text = Std.string(distance) + "m";
