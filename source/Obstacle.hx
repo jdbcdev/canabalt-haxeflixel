@@ -24,6 +24,7 @@ class Obstacle extends FlxSprite
 	 */
 	override public function update():Void
 	{
+
 		if (!dead && this.overlaps(this.player))
 		{
 			player.setStumble();

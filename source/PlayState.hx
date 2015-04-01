@@ -79,6 +79,9 @@ class PlayState extends FlxState
 		bottonground.scrollFactor.y = 0.5;
 		add(bottonground);
 
+		player = new Player(0, 100);
+		add(player);
+
 		//Buildings sequence
 		Sequence.initialize();
 
@@ -95,9 +98,6 @@ class PlayState extends FlxState
 		add(seqB.collisionLayer);
 		add(seqB.foregroundLayer);
 		add(seqB.decorateLayer);
-
-		player = new Player(0, 100);
-		add(player);
 		
 		//Starting playing
 		paused = false;

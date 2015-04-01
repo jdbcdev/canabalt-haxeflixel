@@ -138,14 +138,14 @@ class Sequence extends FlxObject
 		this.width = rect.width;
 
 		decorate = Building.createDecorate(x, y, Std.int(width));
-		decorateLayer.add(decorate);
+		//decorateLayer.add(decorate);
 
 		nextX = nextX + this.width  + FlxRandom.intRanged(5, 7) * TILE_SIZE; //Static variable to setX the next sequence
 
 		FlxG.worldBounds.setSize(nextX + width, FlxG.height);
 		
 		//Obstacles
-		if (curIndex > 0 && FlxRandom.float() < 0.15)
+		//if (curIndex > 0 && FlxRandom.float() < 0.15)
 		{
 			obstacle = new Obstacle(this.x + this.width / 8 + Std.random(1) * (this.width * 0.5), this.y, player);
 			foregroundLayer.add(obstacle);
