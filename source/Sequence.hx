@@ -3,16 +3,16 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxSpriteGroup;
-import flixel.util.FlxPoint;
+import flixel.math.FlxPoint;
 import flixel.tile.FlxTileblock;
 import flixel.effects.particles.FlxEmitter;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
 import haxe.Log;
 
 enum Types { ROOF; COLLAPSE; BILLBOARD; }
 
 class Sequence extends FlxObject
-{	
+{
 	public var collisionLayer:FlxSpriteGroup;
 	public var renderLayer:FlxSpriteGroup;
 	public var foregroundLayer:FlxSpriteGroup;
@@ -20,7 +20,7 @@ class Sequence extends FlxObject
 	//private var layer:FlxSpriteGroup;
 	public var decorateLayer:FlxSpriteGroup;
 	private var layerLeg:FlxSpriteGroup;
-	
+
 	private var seq:Sequence;
 
 	private var player:Player;
@@ -51,7 +51,7 @@ class Sequence extends FlxObject
 	private static var nextX:Float;
 
 	public static function initialize()
-	{	
+	{
 		//Hall.initialize();
 
 		//hall = new Hall();
@@ -94,7 +94,7 @@ class Sequence extends FlxObject
 		//var hallHeight:Int = 0;
 		//hallHeight = 4;
 
-		createBuilding();		
+		createBuilding();
 	}
 	*/
 
@@ -113,19 +113,19 @@ class Sequence extends FlxObject
 	}
 
 	public function createBuilding()
-	{		
+	{
 		this.x = nextX;
-		
+
 		if (curIndex == 0) //First sequence
 		{
 			this.y = 130;
 		}
 		else
 		{
-			this.y = FlxRandom.intRanged(100, 200);
+			this.y = FlxG.random.int(100, 200);
 		}
 
-		var numTiles:Int = FlxRandom.intRanged(50, 70);
+		var numTiles:Int = FlxG.random.int(50, 70);
 		rect = Building.createRect(numTiles, Std.int(this.y));
 		rect.x = nextX;
 		rect.visible = false;
@@ -140,10 +140,10 @@ class Sequence extends FlxObject
 		decorate = Building.createDecorate(x, y, Std.int(width));
 		//decorateLayer.add(decorate);
 
-		nextX = nextX + this.width  + FlxRandom.intRanged(5, 7) * TILE_SIZE; //Static variable to setX the next sequence
+		nextX = nextX + this.width  + FlxG.random.int(5, 7) * TILE_SIZE; //Static variable to setX the next sequence
 
 		FlxG.worldBounds.setSize(nextX + width, FlxG.height);
-		
+
 		//Obstacles
 		//if (curIndex > 0 && FlxRandom.float() < 0.15)
 		{
@@ -157,9 +157,9 @@ class Sequence extends FlxObject
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
-		var point:FlxPoint = getScreenXY();
+		var point:FlxPoint = getScreenPosition();
 		var checkValue:Float = point.x + this.width;
 
 		//Log.trace("point.x " + point.x);
@@ -180,7 +180,7 @@ class Sequence extends FlxObject
 			//Log.trace("Reset " + building.x);
 
 		}
-		
-		super.update();
+
+		super.update(elapsed);
 	}
 }

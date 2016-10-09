@@ -22,7 +22,7 @@ class Obstacle extends FlxSprite
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
 
 		if (!dead && this.overlaps(this.player))
@@ -35,7 +35,7 @@ class Obstacle extends FlxSprite
 			kill();
 		}
 
-		super.update();
+		super.update(elapsed);
 	}
 
 	override public function kill():Void

@@ -6,7 +6,7 @@ import flixel.FlxObject;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
-import flixel.util.FlxMath;
+import flixel.math.FlxMath;
 import flixel.system.FlxSound;
 import flixel.FlxCamera;
 
@@ -37,10 +37,10 @@ class PlayState extends FlxState
 	private var hud:HUD;
 
 	/**
-	 * Function that is called up when to state is created to set it up. 
+	 * Function that is called up when to state is created to set it up.
 	 */
 	override public function create():Void
-	{	
+	{
 		FlxG.debugger.visible = true;
 		//FlxG.debugger.drawDebug = true;
 
@@ -72,7 +72,7 @@ class PlayState extends FlxState
 		midground2.scrollFactor.x = 0.4;
 		midground2.scrollFactor.y = 0.5;
 		add(midground2);
-		
+
 		bottonground = new FlxSprite(0, 202);
 		bottonground.makeGraphic(FlxG.width * 2, 223, 0xff646A7D);
 		bottonground.scrollFactor.x = 0;
@@ -98,12 +98,12 @@ class PlayState extends FlxState
 		add(seqB.collisionLayer);
 		add(seqB.foregroundLayer);
 		add(seqB.decorateLayer);
-		
+
 		//Starting playing
 		paused = false;
-		
+
 		ghost = new FlxSprite(player.x + 200, player.y);
-		FlxG.camera.follow(ghost, FlxCamera.STYLE_PLATFORMER);
+		FlxG.camera.follow(ghost, FlxCameraFollowStyle.PLATFORMER);
 
 		//Sounds
 		sfx_crumble = FlxG.sound.load("assets/sounds/crumble.wav");
@@ -116,9 +116,9 @@ class PlayState extends FlxState
 
 		super.create();
 	}
-	
+
 	/**
-	 * Function that is called when this state is destroyed - you might want to 
+	 * Function that is called when this state is destroyed - you might want to
 	 * consider setting all objects this state uses to null to help garbage collection.
 	 */
 	override public function destroy():Void
@@ -141,13 +141,13 @@ class PlayState extends FlxState
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
 		if (!paused)
 		{
 			var wasDead:Bool = player.dead;
 
-			super.update();
+			super.update(elapsed);
 
 			FlxG.collide(seqA.collisionLayer, player, onCollide);
 			FlxG.collide(seqB.collisionLayer, player, onCollide);
@@ -208,7 +208,7 @@ class PlayState extends FlxState
     			FlxG.switchState(new PlayState());
     		}
 		}
-	}	
+	}
 
 	public function onCollide(object1:FlxObject, object2:FlxObject)
 	{

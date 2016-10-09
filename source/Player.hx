@@ -3,7 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxSound;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
 import haxe.Log;
 
 class Player extends FlxSprite
@@ -25,7 +25,7 @@ class Player extends FlxSprite
   private var my:Float;
 
 	public function new(x:Int, y:Int):Void
-	{	
+	{
     super(x,y);
 
 		loadGraphic("assets/images/player.png", true, 30, 30);
@@ -59,7 +59,7 @@ class Player extends FlxSprite
     {
     	sfx_feet.push(FlxG.sound.load("assets/sounds/foot" + i + ".wav"));
     }
-    
+
     /*
     sfx_jump = new Array<FlxSound>();
     for (i in 1...2)
@@ -74,16 +74,16 @@ class Player extends FlxSprite
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
-	{	
+	override public function update(elapsed:Float):Void
+	{
 		if (y > 300) {
     		dead = true;
     		return;
   		}
 
     if (acceleration.x <= 0)
-      return super.update();
-    
+      return super.update(elapsed);
+
     if (velocity.x < 0) velocity.x = 0;
     else if (velocity.x < 100) acceleration.x = 60;
     else if (velocity.x < 250) acceleration.x = 36;
@@ -93,14 +93,14 @@ class Player extends FlxSprite
 
   	//Jumping
   	jumpLimit = velocity.x / (maxVelocity.x * 2.5);
-    
-  	if (jumpLimit > 0.35) 
+
+  	if (jumpLimit > 0.35)
   		jumpLimit = 0.35;
 
-  	if (jump >= 0 && FlxG.mouse.pressed) 
-    { 
+  	if (jump >= 0 && FlxG.mouse.pressed)
+    {
       // iOS / Android || FlxG.touches.getFirst().pressed)) { //&& FlxG.touches.touching) {
-			 
+
       if (jump == 0) {
         sfx_jump.play();
 			}
@@ -144,14 +144,14 @@ class Player extends FlxSprite
           animation.play("run1");
         else if (velocity.x < 300)
                 animation.play("run2");
-        else if (velocity.x < 550) 
+        else if (velocity.x < 550)
                 animation.play("run3");
-        else 
+        else
           animation.play("run4");
       }
     }
 
-  	super.update();
+  	super.update(elapsed);
 
     if (velocity.y == maxVelocity.y)
       my += FlxG.elapsed;
@@ -180,13 +180,13 @@ class Player extends FlxSprite
     velocity.x = velocity.x * 0.7;
 
     /*
-    if (velocity.x > 500) 
+    if (velocity.x > 500)
       animation.play("stumble4");
-    else if (velocity.x > 300) 
+    else if (velocity.x > 300)
       animation.play("stumble3");
-    else if (velocity.x > 150) 
+    else if (velocity.x > 150)
       animation.play("stumble2");
-    else 
+    else
       animation.play("stumble1");
     */
   }

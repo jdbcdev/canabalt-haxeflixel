@@ -1,11 +1,12 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.tile.FlxTileblock;
-import flixel.util.FlxPoint;
-import flixel.util.FlxRandom;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRandom;
 import haxe.Log;
 
 class Building extends FlxObject
@@ -62,7 +63,7 @@ class Building extends FlxObject
 		leftWallsCracked = ["wall1-left-cracked.png",
 					 		"wall2-left-cracked.png",
 					 		"wall3-left-cracked.png",
-					 		"wall4-left-cracked.png"];		
+					 		"wall4-left-cracked.png"];
 
 		middleWallsCracked = ["wall1-middle-cracked.png",
 	     			 		  "wall2-middle-cracked.png",
@@ -74,7 +75,7 @@ class Building extends FlxObject
 					 		"wall3-right-cracked.png",
 					 		"wall4-right-cracked.png"];
 
-		leftRoofs = ["roof1-left.png", 
+		leftRoofs = ["roof1-left.png",
 					 "roof2-left.png",
 					 "roof3-left.png",
 					 "roof4-left.png"];
@@ -84,33 +85,33 @@ class Building extends FlxObject
 					   "roof3-middle.png",
 					   "roof4-middle.png"];
 
-		rightRoofs = ["roof1-right.png", 
+		rightRoofs = ["roof1-right.png",
 					 "roof2-right.png",
 					 "roof3-right.png",
 					 "roof4-right.png"];
 
-		leftRoofsCracked = ["roof1-left-cracked.png", 
+		leftRoofsCracked = ["roof1-left-cracked.png",
 					 		"roof2-left-cracked.png",
 					 		"roof3-left-cracked.png",
 					 		"roof4-left-cracked.png",
 					 		"roof5-left-cracked.png",
 					 		"roof6-left-cracked.png"];
 
-		middleRoofsCracked = ["roof1-middle-cracked.png", 
+		middleRoofsCracked = ["roof1-middle-cracked.png",
 					 		  "roof2-middle-cracked.png",
 					 		  "roof3-middle-cracked.png",
 					 		  "roof4-middle-cracked.png",
 					 		  "roof5-middle-cracked.png",
 					 		  "roof6-middle-cracked.png"];
 
-		rightRoofsCracked = ["roof1-right-cracked.png", 
+		rightRoofsCracked = ["roof1-right-cracked.png",
 					 		 "roof2-right-cracked.png",
 					 		 "roof3-right-cracked.png",
 					 		 "roof4-right-cracked.png",
 					 		 "roof5-right-cracked.png",
 					 		 "roof6-right-cracked.png"];
 
-		windowImages = ["window1.png", 
+		windowImages = ["window1.png",
 						"window2.png",
 						"window3.png",
 						"window4.png"];
@@ -118,7 +119,7 @@ class Building extends FlxObject
 
 	public static function create(numTiles:Int, startY:Int):FlxSpriteGroup
 	{
-		var type = FlxRandom.intRanged(1, 4);
+		var type = FlxG.random.int(1, 4);
 		var renderLayer:FlxSpriteGroup = new FlxSpriteGroup();
 
 		var numRows:Int = TILE_SIZE * 20;
@@ -168,9 +169,9 @@ class Building extends FlxObject
 	}
 
 	public static function createRect(numTiles:Int, startY:Int):FlxSpriteGroup
-	{	
+	{
 		var collisionLayer:FlxSpriteGroup = new FlxSpriteGroup();
-		
+
 		var rect:FlxSprite = new FlxSprite(0, startY);
 		rect.makeGraphic(numTiles * TILE_SIZE ,20 * TILE_SIZE, 0xffffffff);
 		collisionLayer.add(rect);
@@ -189,12 +190,12 @@ class Building extends FlxObject
 
   		for (i in 1...n)
   		{
-    		if (FlxRandom.float() < 0.3)
+    		if (FlxG.random.float() < 0.3)
     		{
     			var sprite:FlxSprite = new FlxSprite(x + DEC_SIZE + s * i, y - DEC_SIZE, ASSETS_IMAGES + "ac-trimmed.png");
     			decorateLayer.add(sprite);
     		}
-      	}	
+      	}
 
 		return decorateLayer;
 	}
