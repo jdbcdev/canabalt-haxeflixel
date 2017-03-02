@@ -8,7 +8,7 @@ class Obstacle extends FlxSprite
 	private var dead:Bool;
 	private var player:Player;
 
-	private static var TILE_SIZE:Int = 16;
+	private static var TILE_SIZE:Int = 18;
 
 	public function new(x:Float, y:Float, player:Player)
 	{
@@ -16,7 +16,7 @@ class Obstacle extends FlxSprite
 		this.player = player;
 
 		//loadGraphicFromTexture("assets/images/obstacles2.png");
-		loadGraphic("assets/images/obstacles2.png", TILE_SIZE, TILE_SIZE);
+		loadGraphic("assets/images/obstacles2.png", true, TILE_SIZE, TILE_SIZE);
 	}
 
 	/**
